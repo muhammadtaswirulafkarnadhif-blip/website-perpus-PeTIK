@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="flex-grow flex items-center justify-center">
+    <div class="glass hover-float rounded-2xl p-8 w-full max-w-md relative overflow-hidden group">
+        <div class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+        
+        <div class="text-center mb-8 relative z-10">
+            <div class="w-16 h-16 bg-zinc-800/80 rounded-2xl flex items-center justify-center mx-auto mb-4 text-blue-400 shadow-lg">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+            </div>
+            <h2 class="text-2xl font-bold text-white mb-2">Login Pustakawan</h2>
+            <p class="text-zinc-400 text-sm">Silakan masuk untuk mengelola inventaris.</p>
+        </div>
+        
+        <form action="/login" method="POST" class="space-y-5 relative z-10">
+            <div>
+                <label class="block text-sm font-semibold text-zinc-300 mb-2">Username</label>
+                <input type="text" name="username" required class="input-field" placeholder="Masukkan username">
+            </div>
+            <div>
+                <label class="block text-sm font-semibold text-zinc-300 mb-2">Password</label>
+                <input type="password" name="password" required class="input-field" placeholder="Masukkan password">
+            </div>
+            <button type="submit" class="btn-primary w-full mt-4 flex justify-center items-center gap-2">
+                <span>Masuk Sistem</span>
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path></svg>
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

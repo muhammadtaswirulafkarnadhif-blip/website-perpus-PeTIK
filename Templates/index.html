@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="text-center max-w-3xl mx-auto flex-grow flex flex-col justify-center">
+
+    <!-- Wrapper H1 diberi min-height agar konten di bawahnya tidak naik-turun saat teks diketik/dihapus -->
+    <h1 class="text-4xl md:text-6xl font-extrabold text-white mb-6 tracking-tight min-h-[6rem] md:min-h-[9rem] flex items-center justify-center">
+        <span id="typed-header"></span>
+    </h1>
+
+    <p class="text-lg text-zinc-400 mb-12">
+        Akses perpustakaan dengan cepat dan mudah. Silakan pilih peran Anda untuk masuk ke dalam sistem.
+    </p>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        <!-- Kartu Pustakawan -->
+        <div class="glass hover-float rounded-2xl p-8 group flex flex-col items-center text-center relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+            <div class="bg-zinc-800/80 p-4 rounded-2xl mb-6 group-hover:scale-110 group-hover:bg-blue-500/20 transition-all duration-300 relative z-10">
+                <svg class="w-8 h-8 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                </svg>
+            </div>
+            <h2 class="text-2xl font-bold text-white mb-3 relative z-10 group-hover:text-blue-400 transition-colors">Area Pustakawan</h2>
+            <p class="text-zinc-400 mb-8 flex-grow relative z-10">Kelola inventaris buku, tambahkan koleksi baru, dan pantau status peminjaman harian.</p>
+            <a href="/pustakawan" class="btn-primary w-full inline-block relative z-10">Masuk Pustakawan</a>
+        </div>
+
+        <!-- Kartu Peminjam -->
+        <div class="glass hover-float rounded-2xl p-8 group flex flex-col items-center text-center relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-br from-rose-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+            <div class="bg-zinc-800/80 p-4 rounded-2xl mb-6 group-hover:scale-110 group-hover:bg-rose-500/20 transition-all duration-300 relative z-10">
+                <svg class="w-8 h-8 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                </svg>
+            </div>
+            <h2 class="text-2xl font-bold text-white mb-3 relative z-10 group-hover:text-rose-400 transition-colors">Area Peminjam</h2>
+            <p class="text-zinc-400 mb-8 flex-grow relative z-10">Jelajahi koleksi buku yang tersedia dan lakukan peminjaman dengan cepat.</p>
+            <a href="/peminjam" class="btn-outline w-full inline-block relative z-10 text-center">Masuk Peminjam</a>
+        </div>
+
+    </div>
+</div>
+
+<!-- Script Typed.js -->
+<script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Inisialisasi efek ketikan
+        var typed = new Typed('#typed-header', {
+            strings: [
+                'Sistem Peminjaman <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">Buku Modern</span>',
+                'Kelola Perpustakaan <span class="text-transparent bg-clip-text bg-gradient-to-r from-rose-400 to-red-500">Lebih Interaktif</span>',
+                'Akses Buku Favorit <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-500">Lebih Cepat</span>'
+            ],
+            typeSpeed: 60,      // Kecepatan mengetik (ms)
+            backSpeed: 30,      // Kecepatan menghapus (ms)
+            backDelay: 2500,    // Waktu tunggu sebelum menghapus teks
+            loop: true,         // Animasi diulang terus-menerus
+            showCursor: true,
+            cursorChar: '|',
+        });
+
+        // Kustomisasi warna kursor agar senada dengan teks putih
+        const style = document.createElement('style');
+        style.innerHTML = `
+            .typed-cursor {
+                color: #ffffff;
+                font-weight: 300;
+                animation: blink 1s infinite;
+            }
+            @keyframes blink {
+                0% { opacity: 1; }
+                50% { opacity: 0; }
+                100% { opacity: 1; }
+            }
+        `;
+        document.head.appendChild(style);
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="mb-8">
+    <h1 class="text-3xl font-extrabold text-white mb-2 flex items-center gap-3">
+        Panel Pustakawan
+        <span class="bg-blue-500/20 text-blue-400 text-sm px-3 py-1 rounded-full border border-blue-500/30">Admin</span>
+    </h1>
+    <p class="text-zinc-400">Kelola inventaris perpustakaan dan pantau sirkulasi peminjaman.</p>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+    <!-- Kolom Kiri: Form Tambah Buku -->
+    <div class="lg:col-span-1">
+        <div class="glass hover-float rounded-2xl p-6 relative overflow-hidden group">
+            <div class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+
+            <h2 class="text-xl font-bold text-white mb-6 flex items-center gap-2 relative z-10">
+                <div class="p-2 bg-blue-500/20 rounded-lg text-blue-400">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                </div>
+                Tambah Buku Baru
+            </h2>
+            <form action="/pustakawan" method="POST" class="space-y-5 relative z-10">
+                <div>
+                    <label class="block text-sm font-semibold text-zinc-300 mb-2">Judul Buku</label>
+                    <input type="text" name="title" required class="input-field" placeholder="Contoh: Clean Code">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-zinc-300 mb-2">Penulis</label>
+                    <input type="text" name="author" required class="input-field" placeholder="Contoh: Robert C. Martin">
+                </div>
+                <button type="submit" class="btn-primary w-full mt-4 flex justify-center items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
+                    Simpan Buku
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Kolom Kanan: Tabel Data -->
+    <div class="lg:col-span-2 space-y-8">
+
+        <!-- Tabel Status Peminjaman -->
+        <div class="glass rounded-2xl p-6 overflow-hidden">
+            <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                <span class="w-2 h-6 bg-rose-500 rounded-full"></span>
+                Status Peminjaman
+            </h2>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm whitespace-nowrap">
+                    <thead class="text-zinc-400 border-b border-zinc-800">
+                        <tr>
+                            <th class="pb-4 font-semibold">Peminjam</th>
+                            <th class="pb-4 font-semibold">Judul Buku</th>
+                            <th class="pb-4 font-semibold">Status</th>
+                            <th class="pb-4 font-semibold text-right">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-zinc-800/50 text-zinc-300">
+                        {% for borrow in borrowings %}
+                        <tr class="hover:bg-zinc-800/40 transition-colors group">
+                            <td class="py-4 font-medium group-hover:text-white transition-colors">{{ borrow['borrower_name'] }}</td>
+                            <td class="py-4">{{ borrow['title'] }}</td>
+                            <td class="py-4">
+                                {% if borrow['status'] == 'Dipinjam' %}
+                                <span class="bg-rose-500/10 text-rose-400 text-xs px-3 py-1.5 rounded-full border border-rose-500/20 font-semibold tracking-wide">Dipinjam</span>
+                                {% else %}
+                                <span class="bg-emerald-500/10 text-emerald-400 text-xs px-3 py-1.5 rounded-full border border-emerald-500/20 font-semibold tracking-wide">Dikembalikan</span>
+                                {% endif %}
+                            </td>
+                            <td class="py-4 text-right">
+                                {% if borrow['status'] == 'Dipinjam' %}
+                                {% for b in books if b.title == borrow.title %}
+                                <a href="/return_book/{{ borrow['id'] }}/{{ b['id'] }}" class="text-xs font-bold text-white bg-zinc-700 hover:bg-emerald-500 hover:shadow-lg hover:shadow-emerald-500/30 px-4 py-2 rounded-xl transition-all duration-300 inline-block active:scale-95">Kembalikan</a>
+                                {% endfor %}
+                                {% else %}
+                                <span class="text-zinc-600 text-xs font-medium px-4">-</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="4" class="py-8 text-center text-zinc-500 italic bg-zinc-900/20 rounded-lg mt-4">Belum ada riwayat peminjaman.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Tabel Inventaris Buku -->
+        <div class="glass rounded-2xl p-6 overflow-hidden">
+            <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                <span class="w-2 h-6 bg-blue-500 rounded-full"></span>
+                Inventaris Buku
+            </h2>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm whitespace-nowrap">
+                    <thead class="text-zinc-400 border-b border-zinc-800">
+                        <tr>
+                            <th class="pb-4 font-semibold">ID</th>
+                            <th class="pb-4 font-semibold">Judul Buku</th>
+                            <th class="pb-4 font-semibold">Penulis</th>
+                            <th class="pb-4 font-semibold">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-zinc-800/50 text-zinc-300">
+                        {% for book in books %}
+                        <tr class="hover:bg-zinc-800/40 transition-colors group">
+                            <td class="py-4 text-zinc-500 font-mono">#{{ book['id'] }}</td>
+                            <td class="py-4 text-white font-semibold group-hover:text-blue-400 transition-colors">{{ book['title'] }}</td>
+                            <td class="py-4">{{ book['author'] }}</td>
+                            <td class="py-4">
+                                {% if book['is_available'] %}
+                                <span class="text-blue-400 text-xs font-semibold flex items-center gap-2">
+                                    <span class="w-2 h-2 bg-blue-500 rounded-full shadow-[0_0_8px_rgba(59,130,246,0.8)]"></span>Tersedia
+                                </span>
+                                {% else %}
+                                <span class="text-zinc-500 text-xs font-semibold flex items-center gap-2">
+                                    <span class="w-2 h-2 bg-zinc-600 rounded-full"></span>Dipinjam
+                                </span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="4" class="py-8 text-center text-zinc-500 italic bg-zinc-900/20 rounded-lg mt-4">Belum ada buku di perpustakaan.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manajemen Perpustakaan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .glass {
+                @apply bg-zinc-900/70 backdrop-blur-xl border border-zinc-800 shadow-2xl hover:border-blue-500/50 hover:shadow-[0_0_20px_rgba(59,130,246,0.15)] transition-all duration-500;
+            }
+            .btn-primary {
+                @apply bg-gradient-to-r from-blue-600 to-indigo-500 text-white px-6 py-2.5 rounded-xl font-bold shadow-lg shadow-blue-600/30 hover:shadow-blue-500/50 hover:from-blue-500 hover:to-indigo-400 hover:-translate-y-1 active:scale-95 transition-all duration-300;
+            }
+            .btn-outline {
+                @apply border-2 border-rose-500 text-rose-400 px-6 py-2.5 rounded-xl font-bold hover:bg-gradient-to-r hover:from-rose-600 hover:to-red-500 hover:text-white hover:border-transparent hover:shadow-lg hover:shadow-rose-600/40 hover:-translate-y-1 active:scale-95 transition-all duration-300;
+            }
+            .input-field {
+                @apply w-full bg-zinc-900/80 border border-zinc-700 text-white rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 hover:border-zinc-500 transition-all duration-300 placeholder-zinc-500;
+            }
+            .hover-float {
+                @apply hover:-translate-y-2 hover:scale-[1.02] transition-transform duration-300;
+            }
+        }
+    </style>
+</head>
+<body class="bg-zinc-950 text-zinc-300 min-h-screen font-sans antialiased selection:bg-blue-500/30 selection:text-white">
+
+    <nav class="fixed w-full z-50 bg-zinc-950/80 backdrop-blur-md border-b border-zinc-800/80 shadow-[0_4px_30px_rgba(0,0,0,0.5)]">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex-shrink-0 group cursor-pointer">
+                    <a href="/" class="text-white font-extrabold text-xl tracking-wider group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-blue-400 group-hover:to-indigo-400 transition-all duration-300">PERPUSTAKAAN.</a>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-2">
+                        <a href="/" class="hover:bg-zinc-800/50 hover:text-blue-400 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300">Beranda</a>
+                        <a href="/pustakawan" class="hover:bg-zinc-800/50 hover:text-blue-400 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300">Pustakawan</a>
+                        <a href="/peminjam" class="hover:bg-zinc-800/50 hover:text-blue-400 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300">Peminjam</a>
+
+                        <!-- Cek sesi untuk memunculkan tombol logout -->
+                        {% if session.get('logged_in') %}
+                        <a href="/logout" class="bg-rose-500/10 text-rose-400 border border-rose-500/30 hover:bg-rose-500 hover:text-white px-4 py-1.5 rounded-lg text-sm font-semibold transition-all duration-300 ml-4">Logout</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Wadah Flash Messages -->
+    <div id="flash-container" class="fixed top-24 right-6 z-[60] flex flex-col gap-3 pointer-events-none">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    {% if category == 'error' %}
+                        <!-- Notifikasi Error (Merah) -->
+                        <div class="flash-toast bg-zinc-900/90 backdrop-blur-md border border-rose-500/50 shadow-[0_0_20px_rgba(244,63,94,0.2)] text-rose-400 px-6 py-4 rounded-xl font-medium flex items-center gap-3 transition-all duration-500 transform translate-x-0 opacity-100">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            {{ message }}
+                        </div>
+                    {% else %}
+                        <!-- Notifikasi Sukses (Hijau) -->
+                        <div class="flash-toast bg-zinc-900/90 backdrop-blur-md border border-emerald-500/50 shadow-[0_0_20px_rgba(16,185,129,0.2)] text-emerald-400 px-6 py-4 rounded-xl font-medium flex items-center gap-3 transition-all duration-500 transform translate-x-0 opacity-100">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            {{ message }}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <main class="pt-28 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto min-h-screen flex flex-col">
+        {% block content %}{% endblock %}
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const toasts = document.querySelectorAll('.flash-toast');
+            toasts.forEach(toast => {
+                setTimeout(() => {
+                    toast.classList.remove('translate-x-0', 'opacity-100');
+                    toast.classList.add('translate-x-10', 'opacity-0');
+                    setTimeout(() => toast.remove(), 500);
+                }, 3500);
+            });
+        });
+    </script>
+</body>
+</html>
